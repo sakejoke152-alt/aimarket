@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="kaa">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+<title>Fresh Harvest — Kiriw</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  *{font-family:'Nunito',sans-serif}
+  body{min-height:100vh;background:linear-gradient(150deg,#e8f5f0,#f0faf4 55%,#e0f2eb);display:flex;align-items:center;justify-content:center;padding:16px}
+  .karta{background:white;border-radius:28px;box-shadow:0 8px 40px rgba(0,104,70,.13);padding:28px 22px;width:100%;max-width:360px}
+  .logo{background:linear-gradient(135deg,#006846,#00a86b);width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:34px;box-shadow:0 6px 22px rgba(0,104,70,.32)}
+  .inp{border:2px solid #e2e8f0;border-radius:14px;padding:13px 14px;font-size:17px;font-weight:700;width:100%;outline:none;background:#f8fffe;box-sizing:border-box;transition:border-color .2s}
+  .inp:focus{border-color:#006846;background:#fff}
+  .btn{background:linear-gradient(135deg,#006846,#00a86b);color:#fff;border:none;border-radius:16px;padding:15px;font-size:16px;font-weight:900;width:100%;cursor:pointer;box-shadow:0 4px 16px rgba(0,104,70,.32);transition:transform .15s;margin-top:14px}
+  .btn:active{transform:scale(.97)}
+  .tab-btn{flex:1;padding:10px;border-radius:10px;border:none;font-weight:800;font-size:14px;cursor:pointer;transition:all .2s}
+  .xata{background:#fff1f0;border:1.5px solid #fca5a5;border-radius:12px;color:#dc2626;padding:11px 14px;font-size:13px;font-weight:700;display:none;margin-bottom:12px}
+  .demo{background:linear-gradient(135deg,#edfdf4,#f0fff8);border:1.5px dashed #00a86b;border-radius:12px;padding:11px 13px;font-size:12px;color:#006846;font-weight:700;margin-top:14px}
+  .demo-row{cursor:pointer;padding:4px 0;border-radius:6px}
+  .demo-row:hover{text-decoration:underline}
+  .ayiruvchi{display:flex;align-items:center;gap:10px;color:#94a3b8;font-size:12px;font-weight:600;margin:14px 0}
+  .ayiruvchi::before,.ayiruvchi::after{content:'';flex:1;height:1px;background:#e2e8f0}
+  .label{font-size:12px;color:#64748b;font-weight:700;margin-bottom:6px;display:block;letter-spacing:.3px}
+  @keyframes sil{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+  .silkiniw{animation:sil .35s ease}
+  .dis{opacity:.6;pointer-events:none}
+</style>
+</head>
+<body>
+<div class="karta">
+  <div class="logo">🌿</div>
+  <h1 style="text-align:center;font-size:21px;font-weight:900;color:#006846;margin:0 0 4px">Fresh Harvest</h1>
+  <p style="text-align:center;color:#64748b;font-size:13px;font-weight:600;margin:0 0 20px">Taze hám sapali azıq-awqat</p>
+
+  <!-- Tab -->
+  <div style="display:flex;background:#f1f5f9;border-radius:12px;padding:4px;margin-bottom:16px">
+    <button id="tk" class="tab-btn" style="background:#006846;color:#fff" onclick="tab('k')">Kiriw</button>
+    <button id="td" class="tab-btn" style="background:transparent;color:#64748b" onclick="tab('d')">Dizimge alıw</button>
+  </div>
+
+  <div id="xata" class="xata"></div>
+
+  <!-- Kiriw formasi -->
+  <div id="fk">
+    <label class="label">📱 TELEFON NOMERI</label>
+    <input id="nomer" class="inp" type="tel" placeholder="+998 90 123 45 67"
+      oninput="fmt(this)" onkeydown="if(event.key==='Enter')kirıw()"/>
+    <button class="btn" id="kbtn" onclick="kirıw()">Kirip ótiw →</button>
+  </div>
+
+  <!-- Dizimge alıw formasi -->
+  <div id="fd" style="display:none">
+    <label class="label">👤 ISMIŃ</label>
+    <input id="at" class="inp" type="text" placeholder="Ismiń (mısal: Azamat)" style="margin-bottom:12px"/>
+    <label class="label">📱 TELEFON NOMERI</label>
+    <input id="dnomer" class="inp" type="tel" placeholder="+998 90 123 45 67"
+      oninput="fmt(this)" onkeydown="if(event.key==='Enter')dizim()"/>
+    <button class="btn" id="dbtn" onclick="dizim()">Dizimge alınıw ✓</button>
+  </div>
+
+  <div class="ayiruvchi">yaki</div>
+
+  <div class="demo">
+    <div style="font-size:11px;opacity:.65;margin-bottom:6px">⚡ Tez sinaw ushın:</div>
+    <div class="demo-row" onclick="tez('+998901111111')">👤 Paydalanıwshı: <code>+998901111111</code></div>
+    <div class="demo-row" onclick="tez('+998901234567')">🔑 Admin: <code>+998901234567</code></div>
+  </div>
+</div>
+
+<script type="module">
+import { Auth } from './app.js';
+// Sessiya bar bolsa — ótker
+const u = Auth.meni();
+if (u) location.href = u.rol === 'admin' ? 'admin.html' : 'index.html';
+
+let aktTab = 'k';
+window.tab = t => {
+  aktTab = t; xTz();
+  const k = t === 'k';
+  document.getElementById('tk').style.cssText = k ? 'background:#006846;color:#fff' : 'background:transparent;color:#64748b';
+  document.getElementById('td').style.cssText = !k ? 'background:#006846;color:#fff' : 'background:transparent;color:#64748b';
+  document.getElementById('fk').style.display = k ? 'block' : 'none';
+  document.getElementById('fd').style.display = k ? 'none' : 'block';
+};
+
+window.fmt = el => {
+  let v = el.value.replace(/\D/g, '');
+  if (!v.startsWith('998')) v = '998' + v.replace(/^998/, '');
+  el.value = '+' + v.slice(0, 12);
+};
+
+function xKo(m) {
+  const el = document.getElementById('xata');
+  el.textContent = m; el.style.display = 'block';
+  el.classList.remove('silkiniw'); void el.offsetWidth;
+  el.classList.add('silkiniw');
+}
+function xTz() { document.getElementById('xata').style.display = 'none'; }
+function setBtn(id, h) {
+  const b = document.getElementById(id);
+  b.classList.toggle('dis', h);
+  b.textContent = h ? 'Kirip atır...' : (id === 'kbtn' ? 'Kirip ótiw →' : 'Dizimge alınıw ✓');
+}
+
+window.kirıw = () => {
+  xTz(); setBtn('kbtn', true);
+  const { xata, user } = Auth.kirıw(document.getElementById('nomer').value.trim());
+  if (xata) { xKo('❌ ' + xata); setBtn('kbtn', false); return; }
+  location.href = user.rol === 'admin' ? 'admin.html' : 'index.html';
+};
+
+window.dizim = () => {
+  xTz();
+  const at = document.getElementById('at').value.trim();
+  if (!at || at.length < 2) return xKo('❌ Ismin 2+ hárip bolsın!');
+  setBtn('dbtn', true);
+  const { xata, user } = Auth.kirıw(document.getElementById('dnomer').value.trim());
+  if (xata) { xKo('❌ ' + xata); setBtn('dbtn', false); return; }
+  const u = Auth.meni();
+  if (u) { u.at = at; localStorage.setItem('fh_user', JSON.stringify(u)); }
+  location.href = 'index.html';
+};
+
+window.tez = n => { document.getElementById('nomer').value = n; tab('k'); kirıw(); };
+</script>
+</body>
+</html>

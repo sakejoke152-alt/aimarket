@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="kaa">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+<title>Fresh Harvest — Dúkan</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  *{font-family:'Nunito',sans-serif;-webkit-tap-highlight-color:transparent}
+  body{background:#f0faf4;margin:0;padding-bottom:96px}
+
+  /* ── Header ── */
+  .hd{background:linear-gradient(135deg,#006846,#008a5a);padding:14px 16px 15px;position:sticky;top:0;z-index:50;box-shadow:0 2px 16px rgba(0,104,70,.22)}
+  .qbox{position:relative}.qbox input{background:#fff;border:none;border-radius:14px;padding:12px 14px 12px 40px;font-size:15px;font-weight:600;width:100%;box-sizing:border-box;outline:none}
+  .qbox::before{content:'🔍';position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none}
+
+  /* ── Kategoriya chips ── */
+  .chips{display:flex;gap:8px;overflow-x:auto;padding:13px 16px 4px;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{display:flex;align-items:center;gap:5px;background:#fff;border:2px solid #e2e8f0;border-radius:50px;padding:8px 15px;font-size:13px;font-weight:700;white-space:nowrap;cursor:pointer;transition:all .2s;color:#475569;flex-shrink:0}
+  .chip.on{background:#006846;border-color:#006846;color:#fff;box-shadow:0 3px 12px rgba(0,104,70,.32)}
+
+  /* ── Banner ── */
+  .banner{margin:12px 16px 6px;background:linear-gradient(135deg,#006846,#00c47b);border-radius:18px;padding:16px;color:#fff;position:relative;overflow:hidden}
+  .banner::after{content:'🌿';font-size:80px;position:absolute;right:-8px;bottom:-10px;opacity:.18;pointer-events:none}
+
+  /* ── AI usınıs ── */
+  #ai{background:linear-gradient(135deg,#edfdf4,#f0fff8);border:2px solid #00a86b;border-radius:14px;margin:0 16px 4px;padding:11px 14px;font-size:13px;font-weight:700;color:#006846;display:none}
+
+  /* ── Grid ── */
+  .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:10px 16px}
+  .karta{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06);position:relative}
+  .karta img{width:100%;height:130px;object-fit:cover;display:block;background:#e8f5f0}
+  .kinfo{padding:10px 12px 36px}
+  .kinfo .at{font-size:14px;font-weight:800;color:#1e293b;margin:0 0 2px}
+  .kinfo .tag{font-size:11px;color:#94a3b8;font-weight:600;margin:0 0 6px}
+  .kinfo .baha{font-size:15px;font-weight:900;color:#006846}
+  .plus{position:absolute;bottom:10px;right:10px;background:linear-gradient(135deg,#006846,#00a86b);color:#fff;border:none;border-radius:50%;width:34px;height:34px;font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 3px 10px rgba(0,104,70,.38);transition:transform .15s}
+  .plus:active{transform:scale(.82)}
+
+  /* ── Skeleton ── */
+  .skel{background:linear-gradient(90deg,#e8f5f0 25%,#d1fae5 50%,#e8f5f0 75%);background-size:200%;animation:sk 1.4s infinite;border-radius:18px;height:195px}
+  @keyframes sk{0%{background-position:200%}100%{background-position:-200%}}
+
+  /* ── Floating sebet ── */
+  .float-btn{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#006846,#00a86b);color:#fff;border:none;border-radius:20px;padding:14px 26px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 6px 24px rgba(0,104,70,.42);display:none;align-items:center;gap:10px;z-index:100;white-space:nowrap}
+  .float-btn:active{transform:translateX(-50%) scale(.97)}
+  .badge{background:#fff;color:#006846;border-radius:50%;width:24px;height:24px;font-size:13px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+  /* ── Modal ── */
+  .mbg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:flex-end}
+  .mbg.on{display:flex}
+  .mpanel{background:#fff;border-radius:28px 28px 0 0;width:100%;max-height:88vh;overflow-y:auto;padding:8px 16px 32px}
+  .mbar{width:40px;height:4px;background:#e2e8f0;border-radius:2px;margin:12px auto 18px}
+  .sz{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #f1f5f9}
+  .sz img{width:58px;height:58px;border-radius:12px;object-fit:cover;background:#e8f5f0;flex-shrink:0}
+  .sctrl{display:flex;align-items:center;gap:8px;background:#f0faf4;border-radius:12px;padding:6px 10px;margin-left:auto}
+  .scbtn{background:#006846;color:#fff;border:none;border-radius:8px;width:28px;height:28px;font-size:16px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .obtn{background:linear-gradient(135deg,#006846,#00a86b);color:#fff;border:none;border-radius:16px;padding:15px;font-size:16px;font-weight:900;width:100%;cursor:pointer;margin-top:14px}
+
+  /* ── Muwapıq modal ── */
+  .smwbg{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:300;display:none;align-items:center;justify-content:center}
+  .smwbg.on{display:flex}
+  .smwk{background:#fff;border-radius:24px;padding:30px;text-align:center;max-width:280px;margin:16px}
+
+  /* ── Profil ── */
+  .pdd{position:absolute;top:calc(100% + 8px);right:0;background:#fff;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.14);min-width:155px;padding:6px;display:none;z-index:60}
+  .pdd.on{display:block}
+  .pds{padding:10px 14px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;color:#334155}
+  .pds:hover{background:#f0faf4;color:#006846}
+
+  /* ── Bos ── */
+  #bos{display:none;text-align:center;padding:40px 16px;color:#94a3b8}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hd">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+    <div>
+      <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.7);letter-spacing:1.2px">FRESH HARVEST</div>
+      <div id="salam" style="font-size:16px;font-weight:800;color:#fff">Sálem! 👋</div>
+    </div>
+    <div style="position:relative">
+      <div id="pavatar" onclick="pdToggle()" style="background:rgba(255,255,255,.2);border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px">👤</div>
+      <div class="pdd" id="pdd">
+        <div class="pds" onclick="sbAch()">🛒 Sebet</div>
+        <div class="pds" onclick="shıǵıw()" style="color:#ef4444">🚪 Shıǵıw</div>
+      </div>
+    </div>
+  </div>
+  <div class="qbox"><input id="q" type="text" placeholder="Qıdırıw... (mısal: dietalıq)" oninput="qIshle(this.value)"/></div>
+</div>
+
+<!-- KATEGORİYA -->
+<div class="chips">
+  <div class="chip on" onclick="katSec('',this)">🛍️ Barlıq</div>
+  <div class="chip" onclick="katSec('miyweler',this)">🍎 Miyweler</div>
+  <div class="chip" onclick="katSec('sut',this)">🥛 Sút ónimler</div>
+  <div class="chip" onclick="katSec('paliz',this)">🥦 Palız eginler</div>
+  <div class="chip" onclick="katSec('nan',this)">🍞 Nan & Ichimlik</div>
+</div>
+
+<!-- BANNER -->
+<div class="banner">
+  <div style="font-size:10px;font-weight:700;opacity:.75;letter-spacing:1px;margin-bottom:4px">BUGUNGI USINIS</div>
+  <div style="font-size:18px;font-weight:900;margin-bottom:2px">Taze miywelerde</div>
+  <div style="font-size:22px;font-weight:900">-20% chegirma! 🎉</div>
+</div>
+
+<!-- AI USINIS -->
+<div id="ai"></div>
+
+<!-- TOVAR GRID -->
+<div class="grid2" id="grid">
+  <div class="skel"></div><div class="skel"></div>
+  <div class="skel"></div><div class="skel"></div>
+</div>
+<div id="bos"><div style="font-size:46px;margin-bottom:10px">🔍</div><div style="font-size:16px;font-weight:800;color:#475569">Hesh nárese tabılmadı</div></div>
+
+<!-- FLOATING SEBET -->
+<button class="float-btn" id="fbtn" onclick="sbAch()">
+  🛒 Sebet <div class="badge" id="fsan">0</div>
+  <span id="fsumma" style="font-size:13px;opacity:.9"></span>
+</button>
+
+<!-- SEBET MODAL -->
+<div class="mbg" id="sbm" onclick="if(event.target===this)this.classList.remove('on')">
+  <div class="mpanel">
+    <div class="mbar"></div>
+    <h2 style="font-size:20px;font-weight:900;color:#1e293b;margin:0 0 4px">🛒 Meniń Sebetim</h2>
+    <p id="stxt" style="font-size:13px;color:#94a3b8;font-weight:600;margin:0 0 14px"></p>
+    <div id="sich"></div>
+    <div id="sjami" style="display:none;border-top:2px solid #f0faf4;margin-top:12px;padding-top:12px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <span style="font-size:14px;color:#64748b;font-weight:600">Jámisi:</span>
+        <span id="mjami" style="font-size:22px;font-weight:900;color:#006846"></span>
+      </div>
+      <div style="font-size:12px;color:#94a3b8;font-weight:600;text-align:right">Jetkerip beriw: Bepul 🎁</div>
+      <button class="obtn" onclick="buyurtma()">✅ Buyurtma qılıw</button>
+    </div>
+  </div>
+</div>
+
+<!-- MUWAPIQ MODAL -->
+<div class="smwbg" id="mwm">
+  <div class="smwk">
+    <div style="font-size:62px;margin-bottom:10px">✅</div>
+    <h3 style="font-size:20px;font-weight:900;color:#006846;margin:0 0 8px">Buyurtma qabıl etildi!</h3>
+    <p style="font-size:14px;color:#64748b;font-weight:600;margin:0 0 18px">Tez arada jetkeriledi 🚀</p>
+    <button onclick="document.getElementById('mwm').classList.remove('on')" style="background:#006846;color:#fff;border:none;border-radius:14px;padding:12px;font-size:15px;font-weight:800;cursor:pointer;width:100%">Dawam etıw</button>
+  </div>
+</div>
+
+<script type="module">
+import { Auth, DB, Sebet, AI, somsózi, katAt, plImg } from './app.js';
+
+// ── Auth ────────────────────────────────────────────────
+const user = Auth.meni();
+if (!user) { location.href = 'auth.html'; throw 0; }
+if (user.rol === 'admin') { location.href = 'admin.html'; throw 0; }
+document.getElementById('salam').textContent = `Sálem, ${user.at}! 👋`;
+
+// ── State ───────────────────────────────────────────────
+let all = [], aktKat = '', aktQ = '';
+
+// ── Real-time subscription ───────────────────────────────
+const unsub = DB.realtime(rows => { all = rows; render(); });
+window.addEventListener('pagehide', () => unsub?.());
+
+// ── Render ──────────────────────────────────────────────
+function render() {
+  let list = all;
+  if (aktKat) list = list.filter(t => t.category === aktKat);
+  if (aktQ)   list = AI.qıdır(aktQ, list);
+
+  const grid = document.getElementById('grid');
+  const bos  = document.getElementById('bos');
+  if (!list.length) { grid.innerHTML = ''; bos.style.display = 'block'; return; }
+  bos.style.display = 'none';
+
+  grid.innerHTML = list.map(t => `
+    <div class="karta">
+      <img src="${t.image_url || plImg(t.name)}" alt="${t.name}"
+        onerror="this.src='${plImg(t.name)}'"/>
+      <div class="kinfo">
+        <p class="at">${t.name}</p>
+        <p class="tag">${katAt(t.category)} • ${t.calories ?? 0} kkal</p>
+        <p class="baha">${somsózi(t.price)}</p>
+      </div>
+      <button class="plus" data-id="${t.id}" onclick="qos(this)">+</button>
+    </div>`).join('');
+
+  sbUI();
+}
+
+// ── Sebet qosıw ─────────────────────────────────────────
+window.qos = btn => {
+  const t = all.find(x => x.id == btn.dataset.id);
+  if (!t) return;
+  Sebet.qos(t); sbUI();
+  btn.style.transform = 'scale(1.5)';
+  setTimeout(() => btn.style.transform = '', 200);
+  aiUsınıs();
+};
+
+function sbUI() {
+  const n = Sebet.san();
+  document.getElementById('fsan').textContent = n;
+  document.getElementById('fsumma').textContent = somsózi(Sebet.jami());
+  document.getElementById('fbtn').style.display = n > 0 ? 'flex' : 'none';
+}
+
+// ── AI usınıs ───────────────────────────────────────────
+async function aiUsınıs() {
+  const el = document.getElementById('ai');
+  const s  = await AI.rekomendaciya(Sebet.barlıq(), all);
+  if (s.length) {
+    el.innerHTML = `🤖 <b>AI Usınıs:</b> ${s.map(x => x.name).join(', ')} — qosıw kerekpe?`;
+    el.style.display = 'block';
+  } else { el.style.display = 'none'; }
+}
+
+// ── Kategoriya & qıdırıw ────────────────────────────────
+window.katSec = (k, el) => {
+  aktKat = k; aktQ = ''; document.getElementById('q').value = '';
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on'); render();
+};
+window.qIshle = v => { aktQ = v; render(); };
+
+// ── Sebet modal ─────────────────────────────────────────
+window.sbAch = () => {
+  document.getElementById('pdd').classList.remove('on');
+  document.getElementById('sbm').classList.add('on');
+  sbMazmun();
+};
+function sbMazmun() {
+  const s = Sebet.barlıq();
+  document.getElementById('stxt').textContent = `${Sebet.san()} tovar`;
+  document.getElementById('sjami').style.display = s.length ? 'block' : 'none';
+  if (s.length) document.getElementById('mjami').textContent = somsózi(Sebet.jami());
+  document.getElementById('sich').innerHTML = s.length
+    ? s.map(z => `
+      <div class="sz">
+        <img src="${z.image_url || plImg(z.name)}" alt="${z.name}"
+          onerror="this.src='${plImg(z.name)}'"/>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:14px;font-weight:800;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${z.name}</div>
+          <div style="font-size:12px;color:#006846;font-weight:700">${somsózi(z.price)}</div>
+        </div>
+        <div class="sctrl">
+          <button class="scbtn" onclick="sal(${z.id})">−</button>
+          <span style="font-size:15px;font-weight:900;min-width:18px;text-align:center">${z.san}</span>
+          <button class="scbtn" onclick="sqos(${z.id})">+</button>
+        </div>
+      </div>`).join('')
+    : `<div style="text-align:center;padding:28px 0;color:#94a3b8">
+        <div style="font-size:42px;margin-bottom:8px">🛒</div>
+        <div style="font-weight:700">Sebet bos — tovar qosıp baslań!</div>
+      </div>`;
+}
+window.sal  = id => { Sebet.al(id);                          sbUI(); sbMazmun(); };
+window.sqos = id => { const t=all.find(x=>x.id===id); if(t) { Sebet.qos(t); sbUI(); sbMazmun(); } };
+
+window.buyurtma = () => {
+  document.getElementById('sbm').classList.remove('on');
+  Sebet.tazala(); sbUI();
+  document.getElementById('ai').style.display = 'none';
+  document.getElementById('mwm').classList.add('on');
+};
+
+// ── Profil ──────────────────────────────────────────────
+window.pdToggle = () => document.getElementById('pdd').classList.toggle('on');
+document.addEventListener('click', e => {
+  if (!e.target.closest('#pavatar') && !e.target.closest('#pdd'))
+    document.getElementById('pdd').classList.remove('on');
+});
+window.shıǵıw = () => { if (confirm('Haqıyqatdan shıǵamısız?')) { Auth.shıǵıw(); location.href = 'auth.html'; } };
+</script>
+</body>
+</html>
